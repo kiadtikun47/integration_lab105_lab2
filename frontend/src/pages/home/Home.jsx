@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack, Container, Typography, Grid } from '@mui/material';
 import CustomButton from '../../share/components/CustomButton';
 import NoteCard from './components/NoteCard';
@@ -6,14 +6,14 @@ import NoteCreateModal from './components/NoteCreateModal';
 import Axios from '../../share/AxiosInstance';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import GlobalContext from '../../share/context/GlobalContext';
 
-const Home = () => {
+const Home = ({ setStatus = () => {} }) => {
   const [openCreate, setOpenCreate] = useState(false);
   const [notes, setNotes] = useState([]);
   const navigate = useNavigate();
-  const { user, setUser, setStatus } = useContext(GlobalContext);
-
+  const { user, setUser } = useContext(GlobalContext);
 
   useEffect(() => {
     const userToken = Cookies.get('UserToken');
@@ -26,22 +26,20 @@ const Home = () => {
 
   const handleNoteCreateOpen = () => {
     // TODO: check if user is logged in before open modal
-    if(!user){
+    if(!user) {
       setStatus({
         msg: 'You must login to create note',
         severity: 'error',
       });
-    }else{
+    }else {
       setOpenCreate(true);
     }
-    setTimeout(() => setStatus(), 1000);
+    setTimeout(()=> setStatus(), 1000)
   };
 
   const handleNoteCreateClose = () => {
     setOpenCreate(false);
   };
-
-
 
   return (
     <Container maxWidth="md">

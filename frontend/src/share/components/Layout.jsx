@@ -6,35 +6,41 @@ import AuthModal from '../modal/auth/AuthModal';
 import CommentModal from '../modal/comment/CommentModal';
 import SnackBarMessage from '../SnackBarMessage';
 import GlobalContext from '../context/GlobalContext';
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const Layout = () => {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openCommentModal, setOpenCommentModal] = useState(false);
   const [status, setStatus] = useState();
+
   const handleOpen = () => setOpenLoginModal(true);
   const handleClose = () => setOpenLoginModal(false);
 
   const handleCommentOpen = () => setOpenCommentModal(true);
   const handleCommentClose = () => setOpenCommentModal(false);
+
   const [user, setUser] = useState();
+  const [comments, setComments] = useState([]);
   const generatekey = () => {
     return Math.random();
-  }
-  const globalContextValue = useMemo(() => {
+  };
+  const queryClient = new QueryClient();
+  
+  const globalContextValue = useMemo(()=> {
     return {
-    user,
-    setUser,
-    setStatus,
+      user,
+      comments,
+      setUser,
+      setStatus,
+      setComments,
     };
-   }, [user]);
+  }, [user, comments, setComments]);
 
-   const queryClient = new QueryClient();
-
+  
   return (
     <GlobalContext.Provider value={globalContextValue}>
       <QueryClientProvider client={queryClient}>
-    <Box
+        <Box
       sx={{
         minHeight: '100vh',
         background: 'linear-gradient(45deg,#FFFEE0, #FFC8DD, #C2D3FF, #D7FFF5)',
@@ -77,8 +83,10 @@ const Layout = () => {
         <SnackBarMessage key={generatekey()} open={status.open} severity={status.severity} message={status.msg} />
       ) : null}
     </Box>
-    </QueryClientProvider>
+      </QueryClientProvider>
+      
     </GlobalContext.Provider>
+    
   );
 };
 
